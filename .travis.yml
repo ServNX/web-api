@@ -1,0 +1,49 @@
+env:
+  - DISCORD_WEBHOOK="https://discordapp.com/api/webhooks/482648432192782347/oy-XU6t7l7vvnGwGY0NceUEJAhQNgp_5vuzR1gX0-cHqYnjeujDYgyDfK1kI_241OjYd"
+
+branches:
+  except:
+  - /^(?i:wip)-.*$/
+
+language: php
+
+php:
+  - '7.1'
+
+addons:
+  mariadb: '10.3'
+
+sudo: false
+
+before_script:
+- wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
+- chmod +x send.sh
+- cp .env.test .env
+- composer install --prefer-source --no-interaction
+- php artisan key:generate
+
+before_install:
+- mysql -e 'CREATE DATABASE servnx_test;'
+- mysql -e "CREATE USER 'homestead'@'%' IDENTIFIED BY 'secret';"
+- mysql --user=root -e "GRANT ALL PRIVILEGES ON servnx_test.* TO 'homestead'@'%' WITH GRANT OPTION;"
+- mysql --user=root -e 'FLUSH PRIVILEGES;'
+
+services:
+- mysql
+
+script:
+  - vendor/bin/phpunit tests
+
+after_success:
+  - ./send.sh success $DISCORD_WEBHOOK
+
+after_failure:
+  - ./send.sh failure $DISCORD_WEBHOOK
+
+notifications:
+  email:
+#    recipients:
+#      - gtaylor@electricwerks.com
+#    on_success: always
+#    on_failure: always
+    on_failure: change
