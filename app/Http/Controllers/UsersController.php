@@ -29,7 +29,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return response('Not Yet Implemented');
+        return UserResource::collection($this->user->all());
     }
 
     /**
