@@ -14,3 +14,9 @@ Route::get('/', function () {
         </pre>
     ";
 });
+
+/**
+ * Socialite Routes
+ */
+Route::get('auth/github', 'Auth\GithubController@redirectToProvider');
+Route::get('auth/github/callback', 'Auth\GithubController@handleProviderCallback');
