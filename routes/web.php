@@ -18,14 +18,11 @@ Route::get('/', function () {
 Route::namespace('Auth')->group(function () {
 
     // Login
-    Route::post('login', 'LoginController@login');
-    Route::get('verify', 'LoginController@verify');
+    Route::post('login', 'AuthController@login');
+    Route::get('verify', 'AuthController@verify');
 
     // Logout
-    Route::get('logout', function () {
-        \Auth::logout();
-        return response(['message' =>  'success'], 200);
-    });
+    Route::get('logout', 'AuthController@logout');
 
     // Register
     Route::post('register', 'RegisterController@register');
