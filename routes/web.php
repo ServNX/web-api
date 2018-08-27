@@ -15,8 +15,27 @@ Route::get('/', function () {
     ";
 });
 
-/**
- * Socialite Routes
- */
-Route::get('auth/github', 'Auth\GithubController@redirectToProvider');
-Route::get('auth/github/callback', 'Auth\GithubController@handleProviderCallback');
+Route::namespace('Auth')->group(function () {
+
+    // Login
+    Route::post('login', 'LoginController@login');
+    Route::get('verify', 'LoginController@verify');
+
+    // Logout
+    Route::get('logout', function () {
+        \Auth::logout();
+        return response(['message' =>  'success'], 200);
+    });
+
+    // Register
+    Route::post('register', 'RegisterController@register');
+
+    Route::middleware('auth')->group(function () {
+        /**
+         * Services Routes
+         */
+        Route::get('auth/github', 'GithubController@redirectToProvider');
+        Route::get('auth/github/callback', 'GithubController@handleProviderCallback');
+    });
+
+});
