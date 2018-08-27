@@ -18,7 +18,7 @@ Route::get('/', function () {
 Route::namespace('Auth')->group(function () {
 
     // Login
-    Route::post('login', 'AuthController@login');
+    Route::post('login', 'AuthController@authenticate');
     Route::get('verify', 'AuthController@verify');
 
     // Logout
