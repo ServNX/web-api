@@ -17,16 +17,12 @@ Route::get('/', function () {
 
 Route::namespace('Auth')->group(function () {
 
-    // Login
+    // AuthController
     Route::post('login', 'AuthController@authenticate');
-    Route::get('verify', 'AuthController@verify');
-
-    // Logout
     Route::get('logout', 'AuthController@logout');
+    Route::post('register', 'AuthController@register');
 
-    // Register
-    Route::post('register', 'RegisterController@register');
-
+    // Protected (May be moved to api.php)
     Route::middleware('auth')->group(function () {
         /**
          * Services Routes
