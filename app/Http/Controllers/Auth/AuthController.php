@@ -74,5 +74,7 @@ class AuthController extends Controller
             ->each(function ($key, $token) {
                 $token->delete();
             });
+
+        return response(['message' => 'success'], 200);
     }
 }
