@@ -32,7 +32,11 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return response(['message' => 'success'], 200);
+            $token = Auth::user()->createToken('Login')->accessToken;
+            return response([
+                'user' => new UserResource(Auth::user()),
+                'access_token' => $token,
+            ], 200);
         }
 
         return response(['message' => 'Unauthorized'], 401);
@@ -43,12 +47,7 @@ class AuthController extends Controller
      */
     public function verify()
     {
-        // Doesn't appear to be using session based login, likely do to different origins
-        $guest = Auth::guest();
-        $status = $guest ? 401 : 200;
-        $message = $guest ? 'Unauthorized' : 'success';
-
-        return response(['message' => $message], $status);
+        return response(['message' => 'success'], 200);
     }
 
     /**
@@ -63,15 +62,21 @@ class AuthController extends Controller
             return response(['message' => 'User already exists'], 409);
         }
 
-        return response(new UserResource($this->user->create($data)), 201);
+        $user = $this->user->create($data);
+        $token = $user->createToken('Register')->accessToken;
+
+        return response([
+            'user' => new UserResource($user),
+            'access_token' => $token,
+        ], 201);
 
     }
 
     public function logout()
     {
-        $this->user->model()
+        Auth::user()
             ->tokens
-            ->each(function ($key, $token) {
+            ->each(function ($token, $key) {
                 $token->delete();
             });
 
