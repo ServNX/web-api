@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/users', function (Request $request) {
-    return response(\App\User::all());
+Route::middleware('auth:api')->group(function () {
+    Route::get('verify', 'Auth\AuthController@verify');
+    Route::get('logout', 'Auth\AuthController@logout');
+
+    // Temporary for testing
+    Route::get('/users', function () {
+        return response(\App\User::all(), 200);
+    });
 });

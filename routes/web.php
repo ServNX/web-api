@@ -19,7 +19,6 @@ Route::namespace('Auth')->group(function () {
 
     // AuthController
     Route::post('login', 'AuthController@authenticate');
-    Route::get('logout', 'AuthController@logout');
     Route::post('register', 'AuthController@register');
 
     // Protected (May be moved to api.php)
