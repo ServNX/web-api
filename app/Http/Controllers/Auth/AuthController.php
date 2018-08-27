@@ -62,7 +62,11 @@ class AuthController extends Controller
             return response(['message' => 'User already exists'], 409);
         }
 
-        $user = $this->user->create($data);
+        $user = $this->user->create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password'])
+        ]);
         $token = $user->createToken('Register')->accessToken;
 
         return response([
