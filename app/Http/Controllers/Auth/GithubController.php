@@ -5,23 +5,17 @@ namespace App\Http\Controllers\Auth;
 use App\Contracts\ServiceRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\SocialiteManager;
+use Laravel\Socialite\Facades\Socialite;
 
 class GithubController extends Controller
 {
-    /**
-     * @var SocialiteManager $manager
-     */
-    private $manager;
-
     /**
      * @var ServiceRepositoryInterface
      */
     private $service;
 
-    public function __construct(SocialiteManager $manager, ServiceRepositoryInterface $service)
+    public function __construct(ServiceRepositoryInterface $service)
     {
-        $this->manager = $manager;
         $this->service = $service;
     }
 
@@ -32,7 +26,7 @@ class GithubController extends Controller
      */
     public function redirectToProvider()
     {
-        return $this->manager->driver('github')->redirect();
+        return Socialite::driver('github')->redirect();
     }
 
     /**
@@ -42,7 +36,7 @@ class GithubController extends Controller
      */
     public function handleProviderCallback()
     {
-        $user = $this->manager->driver('github')->user();
+        $user = Socialite::driver('github')->user();
 
         $this->service->create([
             'driver' => 'github',
