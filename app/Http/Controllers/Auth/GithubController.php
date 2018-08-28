@@ -26,7 +26,13 @@ class GithubController extends Controller
      */
     public function redirectToProvider()
     {
-        return Socialite::driver('github')->redirect();
+        return Socialite::driver('github')
+            ->scopes([
+                'user',
+                'repo',
+                'admin:org',
+                'write:discussion'
+            ])->redirect();
     }
 
     /**
