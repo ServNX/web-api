@@ -51,7 +51,11 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        return response('Not Yet Implemented');
+        $user = $this->user
+            ->model()
+            ->with(['services'])
+            ->find($id);
+        return response(new UserResource($user));
     }
 
     /**

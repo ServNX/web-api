@@ -17,8 +17,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('verify', 'Auth\AuthController@verify');
     Route::get('logout', 'Auth\AuthController@logout');
 
-    // Temporary for testing
-    Route::get('/users', function () {
-        return response(\App\User::all(), 200);
-    });
+    Route::get('user/{id}', 'UsersController@show');
+
+    /**
+     * Services Routes
+     */
+    Route::get('auth/github', 'GithubController@redirectToProvider');
+    Route::get('auth/github/callback', 'GithubController@handleProviderCallback');
 });

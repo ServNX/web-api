@@ -21,10 +21,4 @@ Route::namespace('Auth')->group(function () {
     Route::post('login', 'AuthController@authenticate');
     Route::post('register', 'AuthController@register');
 
-    /**
-     * Services Routes
-     */
-    Route::get('auth/github', 'GithubController@redirectToProvider');
-    Route::get('auth/github/callback', 'GithubController@handleProviderCallback');
-
 });

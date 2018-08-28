@@ -49,7 +49,7 @@ class GithubController extends Controller
             'username' => strtolower($user->getNickname()),
             'password' => null,
             'token' => $user->token,
-            'user_id' => Auth::id()
+            'user_id' => null
         ]);
     }
 }
