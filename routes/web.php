@@ -21,13 +21,10 @@ Route::namespace('Auth')->group(function () {
     Route::post('login', 'AuthController@authenticate');
     Route::post('register', 'AuthController@register');
 
-    // Protected (May be moved to api.php)
-    Route::middleware('auth')->group(function () {
-        /**
-         * Services Routes
-         */
-        Route::get('auth/github', 'GithubController@redirectToProvider');
-        Route::get('auth/github/callback', 'GithubController@handleProviderCallback');
-    });
+    /**
+     * Services Routes
+     */
+    Route::get('auth/github', 'GithubController@redirectToProvider');
+    Route::get('auth/github/callback', 'GithubController@handleProviderCallback');
 
 });
