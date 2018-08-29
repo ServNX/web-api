@@ -33,6 +33,6 @@ Route::middleware('auth:api')->group(function () {
  * Services Routes
  */
 Route::prefix('auth')->namespace('Auth')->group(function () {
-    Route::get('github/{user_id}', 'GithubController@redirectToProvider');
+    Route::get('github', 'GithubController@redirectToProvider');
     Route::get('github/callback', 'GithubController@handleProviderCallback');
 });

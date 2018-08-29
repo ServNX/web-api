@@ -25,18 +25,29 @@ class GithubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function redirectToProvider($user_id)
+    public function redirectToProvider()
     {
+        $uid = request()->user_id;
+        $exists = $this->service->model()
+            ->whereDriver('github')
+            ->whereUserId($uid)
+            ->first();
+
+        if ($exists) {
+            return response(['message' => 'Service already exists for user'], 409);
+        }
+
         return Socialite::driver('github')
             ->stateless()
-            ->with(['user_id' => $user_id])
+            ->redirectUrl(config('services.github.redirect') . "?user_id={$uid}")
             ->scopes([
                 'user',
                 'repo',
                 'admin:org',
                 'write:discussion'
             ])
-            ->redirect();
+            ->redirect()
+            ->getTargetUrl();
     }
 
     /**
@@ -58,6 +69,6 @@ class GithubController extends Controller
             'user_id' => request()->user_id
         ]);
 
-        return redirect()->away(config('app.url'));
+        return redirect()->away(config('app.url') . '/admin/services');
     }
 }
