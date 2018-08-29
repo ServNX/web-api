@@ -11,15 +11,28 @@
 |
 */
 
+
+
 Route::middleware('auth:api')->group(function () {
     Route::get('verify', 'Auth\AuthController@verify');
     Route::get('logout', 'Auth\AuthController@logout');
 
+    /*
+     * UsersController
+     */
     Route::get('user/{id}', 'UsersController@show');
 
-    /**
-     * Services Routes
+    /*
+     * ServicesController
      */
-    Route::get('auth/github', 'GithubController@redirectToProvider');
-    Route::get('auth/github/callback', 'GithubController@handleProviderCallback');
+    Route::post('services/link', 'ServicesController@link');
+
+});
+
+/**
+ * Services Routes
+ */
+Route::prefix('auth')->namespace('Auth')->group(function () {
+    Route::get('github/{user_id}', 'GithubController@redirectToProvider');
+    Route::get('github/callback', 'GithubController@handleProviderCallback');
 });
