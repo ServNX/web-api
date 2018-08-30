@@ -25,7 +25,9 @@ Route::middleware('auth:api')->group(function () {
     /*
      * ServicesController
      */
-    Route::post('services/link', 'ServicesController@link');
+    Route::get('user/{uid}/services/{service}/repositories', 'ServicesController@repositories');
+    Route::get('user/{uid}/services/{service}/issues', 'ServicesController@issues');
+
 
 });
 
