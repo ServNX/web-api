@@ -34,7 +34,7 @@ class GithubController extends Controller
             ->first();
 
         if ($exists) {
-            return response(['message' => 'Service already exists for user'], 409);
+            $exists->delete();
         }
 
         return Socialite::driver('github')
