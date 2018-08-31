@@ -40,20 +40,27 @@ class ServicesController extends Controller
 
     public function __construct(UserRepositoryInterface $user)
     {
-        $this->user = $user;
+        $self = $this;
+        $this->middleware(function ($request, $next) use ($self, $user) {
+            if (!$request->has('uid') || !$request->has('service')) {
+                return response([
+                    'message' => 'Payload missing required parameters \'uid\' & \'service\''
+                ], 400);
+            }
+
+            $self->user = $user;
+            $self->init($request);
+            return $next($request);
+        });
     }
 
-    public function repositories($uid, $service)
+    /**
+     * @param Request $request
+     */
+    protected function init(Request $request)
     {
-        $this->setUp($uid, $service);
-        return response($this->service->repositories($this->username));
-    }
-
-    protected function setUp($uid, $service)
-    {
-        $user = $this->user->findById($uid);
-
-        $this->model = $user->serviceModel($service);
+        $user = $this->user->findById($request->uid);
+        $this->model = $user->serviceModel($request->service);
 
         $this->driver = $this->model->driver;
         $this->username = $this->model->username;
@@ -62,6 +69,25 @@ class ServicesController extends Controller
         $this->service = $user->serviceInstance($this->driver);
         $this->service->authenticate($this->token);
 
-        return $this->service;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function repositories()
+    {
+        $repos = $this->service->repositories($this->username);
+
+        return response($repos, 200);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function issues($repo, $state = 'open')
+    {
+        $issues = $this->service->issues($this->username, $repo, $state);
+
+        return response($issues, 200);
     }
 }
