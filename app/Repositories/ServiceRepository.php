@@ -23,20 +23,4 @@ class ServiceRepository extends AbstractCrudRepository implements ServiceReposit
     {
         return Service::class;
     }
-
-    public function getService($service)
-    {
-        return $this->model()
-            ->whereDriver($service)
-            ->where('user_id', $this->auth->user()->id)
-            ->first();
-
-    }
-
-    public function repositories($service)
-    {
-        $username = $this->getService($service)->username;
-        $service = resolve("service.$service");
-        return $service->repositories($username);
-    }
 }
