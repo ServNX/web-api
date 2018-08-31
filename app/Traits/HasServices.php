@@ -11,9 +11,16 @@ trait HasServices
         return $this->hasMany(Service::class);
     }
 
-    public function service($name)
+    public function serviceInstance($name)
     {
         return resolve("service.$name");
+    }
+
+    public function serviceModel($name)
+    {
+        return $this->services()
+            ->whereDriver($name)
+            ->first();
     }
 
 }

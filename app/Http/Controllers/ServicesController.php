@@ -12,6 +12,32 @@ class ServicesController extends Controller
      */
     private $user;
 
+    /**
+     * @var $service
+     */
+    private $service;
+
+    /**
+     * @var $model
+     */
+    private $model;
+
+    /**
+     * @var $username
+     */
+    private $username;
+
+    /**
+     * @var $driver
+     */
+    private $driver;
+
+    /**
+     * @var $token
+     */
+    private $token;
+
+
     public function __construct(UserRepositoryInterface $user)
     {
         $this->user = $user;
@@ -19,10 +45,23 @@ class ServicesController extends Controller
 
     public function repositories($uid, $service)
     {
-        $user = $this->user->model()->find($uid);
-        $service = $user->services()->whereDriver($service)->first();
-        $instance = $user->service($service->driver);
+        $this->setUp($uid, $service);
+        return response($this->service->repositories($this->username));
+    }
 
-        return response($instance->repositories($service->username));
+    protected function setUp($uid, $service)
+    {
+        $user = $this->user->findById($uid);
+
+        $this->model = $user->serviceModel($service);
+
+        $this->driver = $this->model->driver;
+        $this->username = $this->model->username;
+        $this->token = $this->model->token;
+
+        $this->service = $user->serviceInstance($this->driver);
+        $this->service->authenticate($this->token);
+
+        return $this->service;
     }
 }

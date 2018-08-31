@@ -16,6 +16,16 @@ class GithubService extends BaseService
         $this->client = $client;
     }
 
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    public function authenticate($usernameOrToken, $password = null, $method = null)
+    {
+        $this->client->authenticate($usernameOrToken, $password, Client::AUTH_HTTP_TOKEN);
+    }
+
     public function repositories($username)
     {
         return $this->client->api('user')->repositories($username);
