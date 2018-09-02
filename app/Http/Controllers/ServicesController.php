@@ -44,31 +44,27 @@ class ServicesController extends Controller
         $this->middleware(function ($request, $next) use ($self, $user) {
             if (!$request->has('uid') || !$request->has('service')) {
                 return response([
-                    'message' => 'Payload missing required parameters \'uid\' & \'service\''
+                    'message' => 'Payload missing required parameters.'
                 ], 400);
             }
 
             $self->user = $user;
-            $self->init($request);
+            $user = $self->user->findById($request->uid);
+            $self->model = $user->serviceModel($request->service);
+
+            if ($this->model === null) {
+                return response(['message' => "Service '$request->service' not found!"], 404);
+            }
+
+            $self->driver = $self->model->driver;
+            $self->username = $self->model->username;
+            $self->token = $self->model->token;
+
+            $self->service = $user->serviceInstance($self->driver);
+            $self->service->authenticate($self->token);
+
             return $next($request);
         });
-    }
-
-    /**
-     * @param Request $request
-     */
-    protected function init(Request $request)
-    {
-        $user = $this->user->findById($request->uid);
-        $this->model = $user->serviceModel($request->service);
-
-        $this->driver = $this->model->driver;
-        $this->username = $this->model->username;
-        $this->token = $this->model->token;
-
-        $this->service = $user->serviceInstance($this->driver);
-        $this->service->authenticate($this->token);
-
     }
 
     /**
