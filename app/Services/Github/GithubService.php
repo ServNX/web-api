@@ -16,11 +16,11 @@ class GithubService extends Client implements ServiceInterface
 
     public function repositories($username)
     {
-        return (new Repositories($this, $username))->all();
+        return new Repositories($this, $username);
     }
 
-    public function issues($username, $repo, $state)
+    public function issues($username, $repo)
     {
-        return (new Issues($this, $username, $repo))->all($state);
+        return new Issues($this, $username, $repo);
     }
 }

@@ -72,7 +72,9 @@ class ServicesController extends Controller
      */
     public function repositories()
     {
-        $repos = $this->service->repositories($this->username);
+        $repos = $this->service
+            ->repositories($this->username)
+            ->all();
 
         return response($repos, 200);
     }
@@ -82,7 +84,9 @@ class ServicesController extends Controller
      */
     public function issues($repo, $state = 'open')
     {
-        $issues = $this->service->issues($this->username, $repo, $state);
+        $issues = $this->service
+            ->issues($this->username, $repo)
+            ->all($state);
 
         return response($issues, 200);
     }
