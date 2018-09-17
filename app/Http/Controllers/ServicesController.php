@@ -40,13 +40,14 @@ class ServicesController extends Controller
 
     public function __construct(UserRepositoryInterface $user)
     {
+
         $self = $this;
+
         $this->middleware(function ($request, $next) use ($self, $user) {
-            if (!$request->has('uid') || !$request->has('service')) {
-                return response([
-                    'message' => 'Payload missing required parameters.'
-                ], 400);
-            }
+            $self->validate($request, [
+                'uid' => 'required',
+                'service' => 'required'
+            ]);
 
             $self->user = $user;
             $user = $self->user->findById($request->uid);
